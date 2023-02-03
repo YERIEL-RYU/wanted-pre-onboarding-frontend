@@ -1,0 +1,18 @@
+.auth-header {
+  margin-top: -100px;
+  text-transform: uppercase;
+  color: #BB2649;
+}
+.auth-button {
+  background-color: #BB2649;
+  color: white;
+  font-size: large;
+  text-transform: uppercase;
+  border: none;
+  height: 30px;
+  margin: 10px 0;
+  cursor: pointer;
+}
+.auth-button:hover {
+  background-color: #e46f8a;
+}
