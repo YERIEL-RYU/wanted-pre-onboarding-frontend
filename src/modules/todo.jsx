@@ -52,6 +52,26 @@ export const requestDeleteTodo = (token, id) => {
     })
     .catch(err => window.alert('삭제할 수 없습니다.'))
   }
+};
+
+export const requestUpdateTodo = (token, id, todo, isCompleted) => {
+  return async (dispatch) => {
+    instance({
+      method: 'put',
+      url: `todos/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      data: {
+        todo: todo,
+        isCompleted: isCompleted
+      }
+    })
+    .then(res => {
+      dispatch(requestGetTodoList(token))
+    })
+    .catch(err => window.alert('수정할 수 없습니다.'))
+  }
 }
 
 const initialState = {

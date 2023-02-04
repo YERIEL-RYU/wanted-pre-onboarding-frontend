@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router';
 import { useDispatch,useSelector } from 'react-redux';
 import './todo.css';
-import { requestDeleteTodo, requestGetTodoList, requestPostTodo } from '../modules/todo';
+import { requestDeleteTodo, requestGetTodoList, requestPostTodo, requestUpdateTodo } from '../modules/todo';
 
 const ItemContainer = styled.li`
   display: flex;
@@ -60,7 +60,20 @@ const Input = styled.input`
 
 const TodoItem = ({todo, token}) => {
   const dispatch = useDispatch();
+  const [update, setUpdate] = useState(false);
+  const [text, setText] = useState('');
 
+  const onTextChange = (e) => {
+    setText(e.target.value);
+  };
+
+  const onChecked = useCallback(()=> {
+    if(todo.isCompleted) {
+      dispatch(requestUpdateTodo(token, todo.id, todo.todo, false));
+    } else {
+      dispatch(requestUpdateTodo(token, todo.id, todo.todo, true));
+    }
+  },[todo, dispatch, token]);
   const onDelete = () => {
     dispatch(requestDeleteTodo(token, todo.id))
   };
@@ -69,8 +82,20 @@ const TodoItem = ({todo, token}) => {
     <ItemContainer key={todo.id}>
       <label>
         <input type='checkbox' id="checked" />
-        {todo.isCompleted ? <Checkbox icon={faLemon} /> : <Checkbox icon={lemon} />}
-        <span>{todo.todo}</span>
+        {
+          todo.isCompleted ? (
+            <>
+              <Checkbox icon={faLemon} onClick={()=>onChecked()} />
+              <span style={{color: 'gray'}}>{todo.todo}</span>
+            </>
+          ) : (
+            <>
+              <Checkbox icon={lemon} onClick={() => onChecked()} />
+              <span>{todo.todo}</span>
+            </>
+          )
+        }
+        
       </label>
       <div style={{display: 'flex'}}>
         <Btn onClick={()=> console.log('update')}><FontAwesomeIcon icon={faPen} /></Btn>
