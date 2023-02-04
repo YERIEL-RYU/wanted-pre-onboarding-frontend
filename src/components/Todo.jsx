@@ -1,11 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLemon, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faLemon, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
 import { faLemon as lemon } from '@fortawesome/free-regular-svg-icons';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
+import { useDispatch,useSelector } from 'react-redux';
+import './todo.css';
+import { requestDeleteTodo, requestGetTodoList, requestPostTodo } from '../modules/todo';
 
-const ItemContainer = styled.div`
+const ItemContainer = styled.li`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -29,11 +32,19 @@ const PlusBtn = styled.div`
     background-color: #c35d75;
   }
 `;
+const Checkbox = styled(FontAwesomeIcon)`
+  color: #BB2649;
+  cursor: pointer;
+  margin-right: 10px;
+`;
 const Btn = styled.button`
   border: none;
   background: none;
   color: ${props => props.col ? props.col : 'gray'};
   cursor: pointer;
+  :hover {
+    color: ${props => props.hov ? props.hov : '#3e3e3e'}
+  }
 `;
 const PlusContainer = styled.div`
   background-color: #BB2649;
@@ -47,28 +58,51 @@ const Input = styled.input`
   width: 350px;
 `;
 
-const TodoItem = (todo) => {
+const TodoItem = ({todo, token}) => {
+  const dispatch = useDispatch();
+
+  const onDelete = () => {
+    dispatch(requestDeleteTodo(token, todo.id))
+  };
+
   return (
-    <ItemContainer>
-      <div>
-        <Btn col={'#BB2649'} ><FontAwesomeIcon icon={lemon} /></Btn>
-        <span>test</span>
+    <ItemContainer key={todo.id}>
+      <label>
+        <input type='checkbox' id="checked" />
+        {todo.isCompleted ? <Checkbox icon={faLemon} /> : <Checkbox icon={lemon} />}
+        <span>{todo.todo}</span>
+      </label>
+      <div style={{display: 'flex'}}>
+        <Btn onClick={()=> console.log('update')}><FontAwesomeIcon icon={faPen} /></Btn>
+        <Btn onClick={() => onDelete()}><FontAwesomeIcon icon={faTrash} /></Btn>
       </div>
-      {/* <div>
-        <Btn col={'#BB2649'}><FontAwesomeIcon icon={faLemon} /></Btn>
-        <span style={{color: 'gray'}}>test</span>
-      </div> */}
-      <Btn><FontAwesomeIcon icon={faTrash} /></Btn>
     </ItemContainer>
   )
 }
 
 const Todo = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [todo, setTodo] = useState('');
+  let token = localStorage.getItem('token');
+  const todos = useSelector(state=>state.todo.todos);
+
+  const onTodoChange = useCallback((e)=>{
+    setTodo(e.target.value);
+  },[]);
 
   useEffect(()=>{
     if(!localStorage.getItem('token')) navigate('/signin')
-  },[])
+  },[]);
+
+  useEffect(()=>{
+    dispatch(requestGetTodoList(token));
+  },[dispatch, token])
+
+  const onPostTodo = useCallback(()=> {
+    dispatch(requestPostTodo(token, todo, setTodo));
+  },[todo, dispatch, token])
 
   return (
     <>
@@ -77,12 +111,12 @@ const Todo = () => {
           <h1>TODO LIST</h1>
         </header>
         <main style={{width: '350px', height: '390px', overflowY: 'scroll', marginBottom: '20px'}}>
-          <TodoItem />
+          {todos.length !== 0 ? todos.map(todo => <TodoItem todo={todo} token={token}/> ) : null}
         </main>
-        <PlusBtn>+</PlusBtn>
+        <PlusBtn onClick={() => onPostTodo()}>+</PlusBtn>
       </div>
       <PlusContainer>
-        <Input type='text' placeholder='할 일을 입력하세요'/>
+        <Input type='text' placeholder='할 일을 입력하세요' value={todo} onChange={onTodoChange}/>
       </PlusContainer>
     </>
   );
