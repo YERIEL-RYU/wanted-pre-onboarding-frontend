@@ -7,13 +7,15 @@ export const authInit = (token) => ({
   token
 });
 
-export const requestLogin = (userData) => {
+export const requestLogin = (userData, onMove) => {
   return async (dispatch) => {
     axios.post('https://pre-onboarding-selection-task.shop/auth/signin', userData)
     .then(res => {
       console.log(res.data)
-      dispatch(authInit(res.data))
+      dispatch(authInit(res.data));
       localStorage.setItem('init', true);
+      localStorage.setItem('token', res.data.access_token);
+      onMove();
     })
     .catch(err => window.alert(err.response.data.message))
   }
@@ -25,7 +27,7 @@ export const requestSign = (userData, onMove) => {
     axios.post('https://pre-onboarding-selection-task.shop/auth/signup', userData)
     .then(res => {
       window.alert('회원가입 되었습니다.');
-      onMove('/');
+      onMove('/siginin');
     })
     .catch(err=> {
       var message = err.response.data.message; 

@@ -16,6 +16,10 @@
 .auth-button:hover {
   background-color: #e46f8a;
 }
+.auth-button:disabled {
+  background-color: gray;
+  cursor: not-allowed;
+}
 
 .auth-text {
   color: gray;

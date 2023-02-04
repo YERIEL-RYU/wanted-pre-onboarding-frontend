@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import styled, { createGlobalStyle } from 'styled-components';
 
@@ -56,12 +56,22 @@ const Box = styled.div`
 `;
 
 const App = () => {
+  const navigate = useNavigate();
   let authInit = useSelector(state=>state.auth.init);
-  const [auth, setAuth] = useState(authInit)
+  let token = localStorage.getItem('token');
+  const [auth, setAuth] = useState(authInit);
+
   useEffect(()=>{
     console.log('wanted pre-onboarding frontend 사전과제 Todo List by YERIEL');
-    setAuth(localStorage.getItem('init'))
+    setAuth(localStorage.getItem('token') ? true : false);
   },[]);
+
+  useEffect(()=>{
+    if (token) {
+      setAuth(true);
+      navigate('/todo', {replace: true})
+    }else navigate('/signin')
+  },[token, navigate])
 
   return (
     <Container>
@@ -70,15 +80,15 @@ const App = () => {
       {auth ? (
         <Routes>
           <Route path="/">
-            <Route index element={<Todo />} />
+            <Route path="/todo" element={<Todo />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>
       ) : (
         <Routes>
           <Route path="/">
-            <Route index element={<Login />} />
-            <Route path="/sign" element={<Sign />} />
+            <Route path="/signin" element={<Login />} />
+            <Route path="/signup" element={<Sign />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLemon, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faLemon as lemon } from '@fortawesome/free-regular-svg-icons';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router';
 
 const ItemContainer = styled.div`
   display: flex;
@@ -63,6 +64,12 @@ const TodoItem = (todo) => {
 }
 
 const Todo = () => {
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(!localStorage.getItem('token')) navigate('/signin')
+  },[])
+
   return (
     <>
       <div>
