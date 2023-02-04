@@ -101,7 +101,7 @@ const TodoItem = ({todo, token}) => {
         <input type='checkbox' id="checked" />
         {todo.isCompleted ? <Checkbox icon={faLemon} onClick={()=>onChecked()} /> : <Checkbox icon={lemon} onClick={() => onChecked()} />}
         {update 
-          ? <input type='text' value={text} onChange={onTextChange} /> 
+          ? <input type='text' value={text} onChange={onTextChange} data-testid="modify-input" /> 
           : <TodoText check>{todo.todo}</TodoText>
         }
         
@@ -109,13 +109,13 @@ const TodoItem = ({todo, token}) => {
       <div style={{display: 'flex'}}>
         {update ? (
           <>
-            <Btn onClick={() => onUpdate()}><FontAwesomeIcon icon={faPen} /></Btn>
-            <Btn onClick={() => onUpdateToggle()}><FontAwesomeIcon icon={faXmark} /></Btn>
+            <Btn onClick={() => onUpdate()} data-testid="submit-button"><FontAwesomeIcon icon={faPen} /></Btn>
+            <Btn onClick={() => onUpdateToggle()} data-testid="cancel-button"><FontAwesomeIcon icon={faXmark} /></Btn>
           </>
         ) : (
           <>
-            <Btn onClick={() => onUpdate()}><FontAwesomeIcon icon={faPen} /></Btn>
-            <Btn onClick={() => onDelete()}><FontAwesomeIcon icon={faTrash} /></Btn>
+            <Btn onClick={() => onUpdate()} data-testid="modify-button"><FontAwesomeIcon icon={faPen} /></Btn>
+            <Btn onClick={() => onDelete()} data-testid="delete-button"><FontAwesomeIcon icon={faTrash} /></Btn>
           </>
         )
       }
@@ -157,10 +157,10 @@ const Todo = () => {
         <main style={{width: '350px', height: '390px', overflowY: 'scroll', marginBottom: '20px'}}>
           {todos.length !== 0 ? todos.map(todo => <TodoItem todo={todo} token={token}/> ) : null}
         </main>
-        <PlusBtn onClick={() => onPostTodo()}>+</PlusBtn>
+        <PlusBtn onClick={() => onPostTodo()} data-testid="new-todo-add-button">+</PlusBtn>
       </div>
       <PlusContainer>
-        <Input type='text' placeholder='할 일을 입력하세요' value={todo} onChange={onTodoChange}/>
+        <Input type='text' placeholder='할 일을 입력하세요' value={todo} onChange={onTodoChange} data-testid="new-todo-input"/>
       </PlusContainer>
     </>
   );
