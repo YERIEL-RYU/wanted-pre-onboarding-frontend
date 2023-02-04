@@ -39,7 +39,7 @@ const Sign = () => {
   const onPasswordChange = useCallback((e)=>{
     const { value } = e.target;
     setUser({...user, password: value});
-    if (value.length < 9) {
+    if (value.length < 8) {
       setValidate({...validate, password: false});
     } else {
       setValidate({...validate, password: true});
@@ -47,7 +47,7 @@ const Sign = () => {
   },[user, validate]);
 
   const onMove = useCallback((url) => {
-    navigate(url);
+    navigate(url, {replace: true});
   },[navigate]);
 
   const onSign = useCallback((e) => {

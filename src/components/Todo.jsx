@@ -84,6 +84,7 @@ const TodoItem = ({todo, token}) => {
 
   const onUpdateToggle = () => {
     setUpdate(!update);
+    setText(todo.todo);
   }
 
   const onUpdate = () => {
