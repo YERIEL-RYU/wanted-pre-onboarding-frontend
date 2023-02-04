@@ -60,7 +60,7 @@ const Login = () => {
           <button className='auth-button' onClick={onLogin} data-testid="signin-button" >Login</button>
         </form>
         <hr />
-        <Link href='signup'>회원가입</Link>
+        <Link href='/wanted-pre-onboarding-frontend/signup'>회원가입</Link>
       </main>
     </>
   );

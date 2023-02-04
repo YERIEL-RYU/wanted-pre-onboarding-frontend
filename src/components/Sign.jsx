@@ -89,7 +89,7 @@ const Sign = () => {
           
         </form>
         <hr />
-        <Link href='/signin'>로그인</Link>
+        <Link href='/wanted-pre-onboarding-frontend/signin'>로그인</Link>
       </main>
     </>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import styled, { createGlobalStyle } from 'styled-components';
 
@@ -57,6 +57,7 @@ const Box = styled.div`
 
 const App = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   let authInit = useSelector(state=>state.auth.init);
   let token = localStorage.getItem('token');
   const [auth, setAuth] = useState(authInit);
@@ -70,22 +71,24 @@ const App = () => {
     if (token) {
       setAuth(true);
       navigate('/todo', {replace: true})
-    }else navigate('/signin')
-  },[token, navigate])
+    }else {
+      if (location.pathname === '/todo') navigate('/signin')
+    }
+  },[token, navigate, location]);
 
   return (
     <Container>
       <GlobalStyle />
       <Box>
       {auth ? (
-        <Routes>
+        <Routes basename="/wanted-pre-onboarding-frontend">
           <Route path="/">
             <Route path="/todo" element={<Todo />} />
             <Route path="*" element={<NoMatch />} />
           </Route>
         </Routes>
       ) : (
-        <Routes>
+        <Routes basename="/wanted-pre-onboarding-frontend">
           <Route path="/">
             <Route path="/signin" element={<Login />} />
             <Route path="/signup" element={<Sign />} />

@@ -14,7 +14,7 @@ const store = createStore(reducer, applyMiddleware(thunk, logger))
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter  basename="/wanted-pre-onboarding-frontend">
       <App />
     </BrowserRouter>
   </Provider>
