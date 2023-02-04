@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLemon, faTrash, faPen } from '@fortawesome/free-solid-svg-icons';
+import { faLemon, faTrash, faPen, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faLemon as lemon } from '@fortawesome/free-regular-svg-icons';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router';
@@ -37,6 +37,9 @@ const Checkbox = styled(FontAwesomeIcon)`
   cursor: pointer;
   margin-right: 10px;
 `;
+const TodoText = styled.span`
+  color: ${props => props.check ? 'gray' : 'black'};
+`;
 const Btn = styled.button`
   border: none;
   background: none;
@@ -61,7 +64,7 @@ const Input = styled.input`
 const TodoItem = ({todo, token}) => {
   const dispatch = useDispatch();
   const [update, setUpdate] = useState(false);
-  const [text, setText] = useState('');
+  const [text, setText] = useState(todo.todo);
 
   const onTextChange = (e) => {
     setText(e.target.value);
@@ -74,32 +77,48 @@ const TodoItem = ({todo, token}) => {
       dispatch(requestUpdateTodo(token, todo.id, todo.todo, true));
     }
   },[todo, dispatch, token]);
+
   const onDelete = () => {
     dispatch(requestDeleteTodo(token, todo.id))
   };
+
+  const onUpdateToggle = () => {
+    setUpdate(!update);
+  }
+
+  const onUpdate = () => {
+    if (update) {
+      dispatch(requestUpdateTodo(token, todo.id, text, todo.isCompleted));
+      onUpdateToggle()
+    } else {
+      onUpdateToggle()
+    }
+  }
 
   return (
     <ItemContainer key={todo.id}>
       <label>
         <input type='checkbox' id="checked" />
-        {
-          todo.isCompleted ? (
-            <>
-              <Checkbox icon={faLemon} onClick={()=>onChecked()} />
-              <span style={{color: 'gray'}}>{todo.todo}</span>
-            </>
-          ) : (
-            <>
-              <Checkbox icon={lemon} onClick={() => onChecked()} />
-              <span>{todo.todo}</span>
-            </>
-          )
+        {todo.isCompleted ? <Checkbox icon={faLemon} onClick={()=>onChecked()} /> : <Checkbox icon={lemon} onClick={() => onChecked()} />}
+        {update 
+          ? <input type='text' value={text} onChange={onTextChange} /> 
+          : <TodoText check>{todo.todo}</TodoText>
         }
         
       </label>
       <div style={{display: 'flex'}}>
-        <Btn onClick={()=> console.log('update')}><FontAwesomeIcon icon={faPen} /></Btn>
-        <Btn onClick={() => onDelete()}><FontAwesomeIcon icon={faTrash} /></Btn>
+        {update ? (
+          <>
+            <Btn onClick={() => onUpdate()}><FontAwesomeIcon icon={faPen} /></Btn>
+            <Btn onClick={() => onUpdateToggle()}><FontAwesomeIcon icon={faXmark} /></Btn>
+          </>
+        ) : (
+          <>
+            <Btn onClick={() => onUpdate()}><FontAwesomeIcon icon={faPen} /></Btn>
+            <Btn onClick={() => onDelete()}><FontAwesomeIcon icon={faTrash} /></Btn>
+          </>
+        )
+      }
       </div>
     </ItemContainer>
   )
