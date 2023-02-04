@@ -16,3 +16,14 @@
 .auth-button:hover {
   background-color: #e46f8a;
 }
+
+.auth-text {
+  color: gray;
+  font-size: small;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+form {
+  width: 300px;
+}

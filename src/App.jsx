@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes, Route } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import styled, { createGlobalStyle } from 'styled-components';
 
 import Login from './components/Login';
@@ -55,9 +56,11 @@ const Box = styled.div`
 `;
 
 const App = () => {
-  let auth = false;
+  let authInit = useSelector(state=>state.auth.init);
+  const [auth, setAuth] = useState(authInit)
   useEffect(()=>{
     console.log('wanted pre-onboarding frontend 사전과제 Todo List by YERIEL');
+    setAuth(localStorage.getItem('init'))
   },[]);
 
   return (

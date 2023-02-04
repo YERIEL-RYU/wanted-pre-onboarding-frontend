@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import './auth.css';
 import styled from 'styled-components';
+import { requestLogin } from '../modules/auth';
 
 const Link = styled.a`
   color: #BB2649;
@@ -14,7 +16,9 @@ const Link = styled.a`
 `;
 
 const Login = () => {
-  const [user, setUser] = useState({userid: '', password: ''});
+  const [user, setUser] = useState({email: '', password: ''});
+
+  const dispatch = useDispatch();
 
   const onUserChange = useCallback((e)=>{
     const { name, value } = e.target;
@@ -23,7 +27,7 @@ const Login = () => {
 
   const onLogin = useCallback((e) => {
     e.preventDefault();
-    if (user.userid === '') {
+    if (user.email === '') {
       window.alert('아이디를 입력하세요');
       return;
     } 
@@ -31,7 +35,8 @@ const Login = () => {
       window.alert('비밀번호를 입력하세요');
       return;
     }
-  },[user]);
+    dispatch(requestLogin(user));
+  },[user, dispatch]);
 
   return (
     <>
@@ -40,7 +45,7 @@ const Login = () => {
       </header>
       <main>
         <form>
-          <input type='text' name='userid' value={user.userid} onChange={onUserChange} placeholder='아이디를 입력하세요' /> 
+          <input type='text' name='email' value={user.email} onChange={onUserChange} placeholder='아이디를 입력하세요' /> 
           <input type='password' name='password' value={user.password} onChange={onUserChange} autoComplete="off" placeholder='비밀번호를 입력하세요' />
           <button className='auth-button' onClick={onLogin}>Login</button>
         </form>

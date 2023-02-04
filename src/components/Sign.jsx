@@ -1,6 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import './auth.css';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { requestSign } from '../modules/auth';
 
 const Link = styled.a`
   color: #BB2649;
@@ -14,24 +17,41 @@ const Link = styled.a`
 `;
 
 const Sign = () => {
-  const [user, setUser] = useState({userid: '', password: ''});
+  const [user, setUser] = useState({email: '', password: ''});
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onUserChange = useCallback((e)=>{
     const { name, value } = e.target;
     setUser({...user, [name]: value});
   },[user]);
 
+  const onMove = useCallback((url) => {
+    navigate(url);
+  },[navigate]);
+
   const onSign = useCallback((e) => {
     e.preventDefault();
-    if (user.userid === '') {
+    if (user.email === '') {
       window.alert('아이디를 입력하세요');
       return;
     } 
+    if (!user.email.indexOf('@')){
+      window.alert('이메일 형식으로 입력하세요');
+      return;
+    }
+
     if (user.password === '') {
       window.alert('비밀번호를 입력하세요');
       return;
     }
-  },[user]);
+    if (user.password.length < 9) {
+      window.alert('비밀번호를 8자 이상 입력하세요');
+      return;
+    }
+    dispatch(requestSign(user, onMove));
+  },[user, dispatch, onMove]);
 
   return (
     <>
@@ -40,12 +60,14 @@ const Sign = () => {
       </header>
       <main>
         <form>
-          <input type='text' name='userid' value={user.userid} onChange={onUserChange} placeholder='아이디를 입력하세요' /> 
+          <input type='text' name='email' value={user.email} onChange={onUserChange} placeholder='아이디를 입력하세요' />
+          <div className='auth-text'>이메일 형식으로 입력하세요 <br />(ex. wanted@wanted.com)</div> 
           <input type='password' name='password' value={user.password} onChange={onUserChange} autoComplete="off" placeholder='비밀번호를 입력하세요' />
+          <div className='auth-text'>8자 이상 입력하세요</div>
           <button className='auth-button' onClick={onSign}>회원가입</button>
         </form>
         <hr />
-        <Link href='sign'>로그인</Link>
+        <Link href='/'>로그인</Link>
       </main>
     </>
   );
